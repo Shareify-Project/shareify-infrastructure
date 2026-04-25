@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shareify-user-service
+  labels:
+    app: shareify-user-service
+spec:
+  serviceName: "shareify-user-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shareify-user-service
+  template:
+    metadata:
+      labels:
+        app: shareify-user-service
+    spec:
+      containers:
+        - name: user-service
+          image: mvnsakash/shareify-user-service:v1.1.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: JWT_SECRET
+              value: "shareify-secret-key-2024"
+            - name: DATABASE_PATH
+              value: "/data/users.db"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "csi-standard"
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shareify-user-service
+  labels:
+    app: shareify-user-service
+spec:
+  type: ClusterIP
+  selector:
+    app: shareify-user-service
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP

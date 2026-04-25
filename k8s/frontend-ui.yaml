@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shareify-frontend
+  labels:
+    app: shareify-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shareify-frontend
+  template:
+    metadata:
+      labels:
+        app: shareify-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: mvnsakash/shareify-frontend:v1.1.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shareify-frontend
+  labels:
+    app: shareify-frontend
+spec:
+  type: ClusterIP
+  selector:
+    app: shareify-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP

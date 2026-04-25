@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shareify-payment-service
+  labels:
+    app: shareify-payment-service
+spec:
+  serviceName: "shareify-payment-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shareify-payment-service
+  template:
+    metadata:
+      labels:
+        app: shareify-payment-service
+    spec:
+      containers:
+        - name: payment-service
+          image: mvnsakash/shareify-payment-service:v1.1.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_PATH
+              value: "/data/payments.db"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "csi-standard"
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shareify-payment-service
+  labels:
+    app: shareify-payment-service
+spec:
+  type: ClusterIP
+  selector:
+    app: shareify-payment-service
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP

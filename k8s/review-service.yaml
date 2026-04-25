@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shareify-review-service
+  labels:
+    app: shareify-review-service
+spec:
+  serviceName: "shareify-review-service"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shareify-review-service
+  template:
+    metadata:
+      labels:
+        app: shareify-review-service
+    spec:
+      containers:
+        - name: review-service
+          image: mvnsakash/shareify-review-service:v1.1.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: JWT_SECRET
+              value: "shareify-secret-key-2024"
+            - name: DATABASE_PATH
+              value: "/data/reviews.db"
+            - name: BOOKING_SERVICE_URL
+              value: "http://shareify-booking-service:8000"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "csi-standard"
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shareify-review-service
+  labels:
+    app: shareify-review-service
+spec:
+  type: ClusterIP
+  selector:
+    app: shareify-review-service
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
