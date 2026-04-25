@@ -21,4 +21,20 @@ frontend:
       memory: 128Mi
     requests:
       cpu: 10m
-      memory: 16Mi
+
+# Service-Specific Tag Overrides
+services:
+  user:
+    imageTag: v1.1.2
+  item:
+    imageTag: v1.1.2
+  inventory:
+    imageTag: v1.1.2
+  booking:
+    imageTag: v1.1.2
+  payment:
+    imageTag: v1.1.2
+  review:
+    imageTag: v1.1.2
+  notification:
+    imageTag: v1.1.2

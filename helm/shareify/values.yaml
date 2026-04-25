@@ -49,30 +49,37 @@ backendDefaults:
 services:
   user:
     name: user-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/users.db"
   item:
     name: item-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/items.db"
   inventory:
     name: inventory-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/inventory.db"
   booking:
     name: booking-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/bookings.db"
   payment:
     name: payment-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/payments.db"
   review:
     name: review-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/reviews.db"
   notification:
     name: notification-service
+    imageTag: v1.1.2
     port: 8000
     dbPath: "/data/notifications.db"
     smtp:
